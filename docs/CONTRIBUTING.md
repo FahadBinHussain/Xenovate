@@ -25,7 +25,6 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
 1. Install dependencies:
    ```bash
-   cd xenovate
    npm install
    ```
 
@@ -38,7 +37,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
 1. Create a virtual environment:
    ```bash
-   cd xenovate/backend
+   cd backend
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
@@ -57,13 +56,12 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
 ### Frontend Tests
 ```bash
-cd xenovate
 npm test
 ```
 
 ### Backend Tests
 ```bash
-cd xenovate/backend
+cd backend
 pytest
 ```
 

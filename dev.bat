@@ -1,23 +1,34 @@
 @echo off
-setlocal
+echo Starting Xenovate development environment...
 
-:: Set the workspace path
-set WORKSPACE_PATH=%~dp0
+REM Set workspace path
+set WORKSPACE=%~dp0
 
-:: Create and activate virtual environment
-python -m venv venv
+REM Create and activate virtual environment if it doesn't exist
+if not exist "venv" (
+    python -m venv venv
+)
 call venv\Scripts\activate
 
-:: Install backend dependencies
-pip install -r xenovate\backend\requirements.txt
-pip install google-generative-ai
+REM Install backend dependencies
+cd backend
+pip install -r requirements.txt
 
-:: Start the backend server in a new window
-start cmd /k "cd %WORKSPACE_PATH% && call venv\Scripts\activate && cd xenovate\backend && python -m uvicorn main:app --reload"
+REM Set environment variables for backend
+set GOOGLE_API_KEY=AIzaSyAjJFj4qVB-cWHgn5fAlXibnLfdMZDaLRU
+set PYTHONPATH=%WORKSPACE%backend
 
-:: Install frontend dependencies and start the development server
-cd xenovate
-npm install
-npm run dev
+REM Start backend server in a new window
+start "Xenovate Backend" cmd /k "cd %WORKSPACE%backend && python -m uvicorn app.main:app --reload --port 8000"
 
-endlocal 
+REM Install frontend dependencies and start frontend server in a new window
+cd ..
+set NEXT_PUBLIC_API_URL=http://localhost:8000
+start "Xenovate Frontend" cmd /k "npm install && npm run dev"
+
+echo.
+echo Development servers started!
+echo Backend: http://localhost:8000
+echo Frontend: http://localhost:3000
+echo.
+echo Press Ctrl+C in the respective windows to stop the servers 

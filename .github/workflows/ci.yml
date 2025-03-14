@@ -24,31 +24,28 @@ jobs:
           
       - name: Install backend dependencies
         run: |
-          cd xenovate/backend
+          cd backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-asyncio
           
       - name: Install frontend dependencies
         run: |
-          cd xenovate
           npm ci
         
       - name: Run backend tests
         run: |
-          cd xenovate/backend
+          cd backend
           pytest
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           
       - name: Run frontend tests
         run: |
-          cd xenovate
           npm test
         
       - name: Build frontend
         run: |
-          cd xenovate
           npm run build
         
   deploy:
@@ -70,15 +67,15 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v4
         with:
-          context: ./xenovate
-          file: ./xenovate/docker/Dockerfile.frontend
+          context: .
+          file: ./docker/Dockerfile.frontend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/xenovate-frontend:latest
           
       - name: Build and push backend
         uses: docker/build-push-action@v4
         with:
-          context: ./xenovate
-          file: ./xenovate/docker/Dockerfile.backend
+          context: .
+          file: ./docker/Dockerfile.backend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/xenovate-backend:latest 
