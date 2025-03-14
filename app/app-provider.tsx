@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { ThemeProvider } from 'next-themes';
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -19,11 +20,16 @@ export default function AppProvider({ children }: AppProviderProps) {
   }, [pathname, loading]);
 
   return (
-    <>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
       <Header />
       <main>
         {children}
       </main>
-    </>
+    </ThemeProvider>
   );
 } 

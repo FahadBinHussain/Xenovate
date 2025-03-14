@@ -8,4 +8,4 @@ psycopg2-binary==2.9.9
 supabase==2.0.3
 python-multipart==0.0.6
 websockets==12.0
-google-generative-ai==0.2.0 
+google-generativeai==0.8.4 
