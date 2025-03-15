@@ -1,7 +1,7 @@
 services:
   - type: web
+    runtime: node
     name: xenovate
-    env: node
     region: asia # Choose your region
     plan: starter # Change as needed
     buildCommand: npm install && npx next build
@@ -20,13 +20,13 @@ services:
       - node_modules
 
   - type: web
+    runtime: python
     name: xenovate-backend
-    env: python
-    region: oregon
+    region: asia # Using the same region as frontend for lower latency
     plan: starter
     buildCommand: pip install -r backend/requirements.txt
     startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /health
+    healthCheckPath: /health # Make sure your backend has this endpoint!
     envVars:
       - key: PYTHONPATH
         value: /
