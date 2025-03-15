@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: xenovate
+    env: node
+    region: oregon # Choose your region
+    plan: starter # Change as needed
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false # Set this value in the Render dashboard
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false # Set this value in the Render dashboard  
+      - key: NEXT_PUBLIC_API_URL
+        sync: false # Set this value in the Render dashboard
+    cacheDirectories:
+      - .next/cache
+      - node_modules/.cache 
