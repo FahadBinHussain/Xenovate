@@ -2,10 +2,10 @@ services:
   - type: web
     name: xenovate
     env: node
-    region: oregon # Choose your region
+    region: asia # Choose your region
     plan: starter # Change as needed
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: npm install && npx next build
+    startCommand: npx next start
     healthCheckPath: /
     envVars:
       - key: NEXT_PUBLIC_SUPABASE_URL
@@ -16,4 +16,21 @@ services:
         sync: false # Set this value in the Render dashboard
     cacheDirectories:
       - .next/cache
-      - node_modules/.cache 
+      - node_modules/.cache
+      - node_modules
+
+  - type: web
+    name: xenovate-backend
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONPATH
+        value: /
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false 
