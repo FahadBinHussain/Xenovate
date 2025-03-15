@@ -1,3 +1,6 @@
+# Render Blueprint for Xenovate application
+# Defines both the frontend and backend services
+
 services:
   - type: web
     runtime: node
