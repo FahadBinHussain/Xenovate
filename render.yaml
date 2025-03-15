@@ -1,39 +1,13 @@
-# Render Blueprint for Xenovate application
-# Defines both the frontend and backend services
-
 services:
   - type: web
-    runtime: node
     name: xenovate
-    region: asia # Choose your region
-    plan: starter # Change as needed
-    buildCommand: npm install && npx next build
-    startCommand: npx next start
-    healthCheckPath: /
+    env: node
+    buildCommand: npm install && pip install -r backend/requirements.txt && npm run build
+    startCommand: npm run start:all
     envVars:
-      - key: NEXT_PUBLIC_SUPABASE_URL
-        sync: false # Set this value in the Render dashboard
-      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-        sync: false # Set this value in the Render dashboard  
-      - key: NEXT_PUBLIC_API_URL
-        sync: false # Set this value in the Render dashboard
-    cacheDirectories:
-      - .next/cache
-      - node_modules/.cache
-      - node_modules
-
-  - type: web
-    runtime: python
-    name: xenovate-backend
-    region: asia # Using the same region as frontend for lower latency
-    plan: starter
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /health # Make sure your backend has this endpoint!
-    envVars:
-      - key: PYTHONPATH
-        value: /
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_KEY
-        sync: false 
+      - key: NODE_VERSION
+        value: 18.20.7
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000 
