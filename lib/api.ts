@@ -1,33 +1,9 @@
 // API utility functions for Xenovate
 
-// Type definitions
-interface CodeRequest {
-  code: string;
-  language: string;
-}
+import { CodeRequest, AnalysisResponse, OptimizationResponse, ConversionResponse, ExplanationResponse } from '@/types/api';
 
-interface AnalysisResponse {
-  time_complexity: string;
-  space_complexity: string;
-  explanation: string;
-}
-
-interface OptimizationResponse {
-  optimized_code: string;
-  improvements: string[];
-}
-
-interface ConversionResponse {
-  converted_code: string;
-  target_language: string;
-}
-
-interface ExplanationResponse {
-  explanation: string;
-}
-
-// Base API URL (fetched from environment variable or default to localhost)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Base API URL (using relative paths since we're using Next.js API routes)
+const API_BASE_URL = '';
 
 /**
  * Analyze algorithm for time and space complexity
@@ -51,12 +27,7 @@ export async function analyzeAlgorithm(
       throw new Error(`Analysis failed: ${response.status}`);
     }
 
-    const data = await response.json();
-    return {
-      time_complexity: data.time_complexity || 'Unknown',
-      space_complexity: data.space_complexity || 'Unknown',
-      explanation: data.explanation || 'No explanation available',
-    };
+    return response.json();
   } catch (error) {
     console.error('Error analyzing algorithm:', error);
     throw error;
@@ -85,11 +56,7 @@ export async function optimizeAlgorithm(
       throw new Error(`Optimization failed: ${response.status}`);
     }
 
-    const data = await response.json();
-    return {
-      optimized_code: data.optimized_code || request.code,
-      improvements: data.improvements || [],
-    };
+    return response.json();
   } catch (error) {
     console.error('Error optimizing algorithm:', error);
     throw error;
@@ -104,7 +71,7 @@ export async function convertCode(
   targetLanguage: string
 ): Promise<ConversionResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/convert?target_language=${encodeURIComponent(targetLanguage)}`, {
+    const response = await fetch(`${API_BASE_URL}/api/convert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,6 +79,7 @@ export async function convertCode(
       body: JSON.stringify({
         code: request.code,
         language: request.language,
+        target_language: targetLanguage,
       }),
     });
 
@@ -119,11 +87,7 @@ export async function convertCode(
       throw new Error(`Conversion failed: ${response.status}`);
     }
 
-    const data = await response.json();
-    return {
-      converted_code: data.converted_code || 'Conversion failed',
-      target_language: targetLanguage,
-    };
+    return response.json();
   } catch (error) {
     console.error('Error converting code:', error);
     throw error;
@@ -131,7 +95,7 @@ export async function convertCode(
 }
 
 /**
- * Explain algorithm in plain language
+ * Explain code in simple terms
  */
 export async function explainAlgorithm(
   request: CodeRequest
@@ -152,10 +116,7 @@ export async function explainAlgorithm(
       throw new Error(`Explanation failed: ${response.status}`);
     }
 
-    const data = await response.json();
-    return {
-      explanation: data.explanation || 'No explanation available',
-    };
+    return response.json();
   } catch (error) {
     console.error('Error explaining algorithm:', error);
     throw error;

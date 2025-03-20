@@ -6,8 +6,8 @@ settings = get_settings()
 
 class CodeAnalysisService:
     def __init__(self):
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel('gemini-1.5-flash-002')
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     async def analyze_code(self, code: str, language: str) -> Dict[str, Any]:
         """Analyze code and provide complexity analysis, explanation, and optimization suggestions."""
