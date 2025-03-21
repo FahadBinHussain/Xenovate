@@ -6,10 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "backend": "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000",
-    "dev:all": "concurrently \"npm run backend\" \"next dev\"",
-    "start:all": "concurrently \"npm run backend\" \"npm start\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
