@@ -1,5 +1,15 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+// Debug API key (redacting most of it for security)
+const apiKey = process.env.GEMINI_API_KEY || '';
+if (apiKey) {
+  const firstFive = apiKey.substring(0, 5);
+  const lastThree = apiKey.substring(apiKey.length - 3);
+  console.log(`[DEBUG] Gemini API Key loaded: ${firstFive}...${lastThree} (${apiKey.length} chars)`);
+} else {
+  console.log('[DEBUG] No Gemini API Key found in environment variables');
+}
+
 // Initialize the Google AI client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
@@ -10,30 +20,46 @@ function isApiKeyError(error: any): boolean {
          error?.message?.includes('API key expired');
 }
 
-// Helper function to get fallback response
-function getFallbackResponse(type: 'analyze' | 'optimize' | 'convert' | 'explain', code: string, language: string, targetLanguage?: string) {
+// Helper function to get error response
+function getErrorResponse(type: 'analyze' | 'optimize' | 'convert' | 'explain', error: any, code: string, language: string, targetLanguage?: string) {
+  const errorMessage = error?.message || 'Unknown error';
+  
   switch (type) {
     case 'analyze':
       return {
-        time_complexity: 'O(n)',
-        space_complexity: 'O(1)',
-        explanation: 'Unable to analyze code. Please check your API key configuration.'
+        time_complexity: 'Unknown',
+        space_complexity: 'Unknown',
+        explanation: `Error: ${errorMessage}`
       };
     case 'optimize':
       return {
         optimized_code: code,
-        improvements: ['Unable to optimize code. Please check your API key configuration.']
+        improvements: [`Error: ${errorMessage}`]
       };
     case 'convert':
       return {
         converted_code: code,
-        target_language: targetLanguage || language
+        target_language: targetLanguage || language,
+        error: errorMessage
       };
     case 'explain':
       return {
-        explanation: 'Unable to explain code. Please check your API key configuration.'
+        explanation: `Error: ${errorMessage}`
       };
   }
+}
+
+// Configure the Gemini model - only use the model that's confirmed to work
+function getGeminiClient() {
+  return genAI.getGenerativeModel({ 
+    model: 'gemini-1.5-pro',
+    generationConfig: {
+      temperature: 0.7,
+      topP: 0.95,
+      topK: 40,
+      maxOutputTokens: 8192,
+    }
+  });
 }
 
 export async function analyzeCode(code: string, language: string) {
@@ -42,9 +68,6 @@ export async function analyzeCode(code: string, language: string) {
       throw new Error('API key not configured');
     }
 
-    // Using newer client pattern
-    const client = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    
     const prompt = `Analyze this ${language} code and provide:
     1. Time complexity
     2. Space complexity
@@ -55,6 +78,7 @@ export async function analyzeCode(code: string, language: string) {
 
     Please format your response as JSON with keys: time_complexity, space_complexity, explanation`;
 
+    const client = getGeminiClient();
     const result = await client.generateContent(prompt);
     const text = result.response.text();
     
@@ -88,10 +112,7 @@ export async function analyzeCode(code: string, language: string) {
     }
   } catch (error) {
     console.error('Error analyzing code:', error);
-    if (isApiKeyError(error)) {
-      return getFallbackResponse('analyze', code, language);
-    }
-    throw error;
+    return getErrorResponse('analyze', error, code, language);
   }
 }
 
@@ -100,9 +121,6 @@ export async function optimizeCode(code: string, language: string) {
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('API key not configured');
     }
-
-    // Using newer client pattern
-    const client = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const prompt = `Optimize this ${language} code and provide:
     1. The optimized code
@@ -113,6 +131,7 @@ export async function optimizeCode(code: string, language: string) {
 
     Please format your response as JSON with keys: optimized_code, improvements`;
 
+    const client = getGeminiClient();
     const result = await client.generateContent(prompt);
     const text = result.response.text();
     
@@ -140,10 +159,7 @@ export async function optimizeCode(code: string, language: string) {
     }
   } catch (error) {
     console.error('Error optimizing code:', error);
-    if (isApiKeyError(error)) {
-      return getFallbackResponse('optimize', code, language);
-    }
-    throw error;
+    return getErrorResponse('optimize', error, code, language);
   }
 }
 
@@ -153,9 +169,6 @@ export async function convertCode(code: string, sourceLanguage: string, targetLa
       throw new Error('API key not configured');
     }
 
-    // Using newer client pattern
-    const client = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
     const prompt = `Convert this ${sourceLanguage} code to ${targetLanguage}:
 
     Code:
@@ -163,6 +176,7 @@ export async function convertCode(code: string, sourceLanguage: string, targetLa
 
     Please provide only the converted code without any explanations or markdown formatting.`;
 
+    const client = getGeminiClient();
     const result = await client.generateContent(prompt);
     const text = result.response.text();
     
@@ -179,10 +193,7 @@ export async function convertCode(code: string, sourceLanguage: string, targetLa
     };
   } catch (error) {
     console.error('Error converting code:', error);
-    if (isApiKeyError(error)) {
-      return getFallbackResponse('convert', code, sourceLanguage, targetLanguage);
-    }
-    throw error;
+    return getErrorResponse('convert', error, code, sourceLanguage, targetLanguage);
   }
 }
 
@@ -192,9 +203,6 @@ export async function explainCode(code: string, language: string) {
       throw new Error('API key not configured');
     }
 
-    // Using newer client pattern
-    const client = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
     const prompt = `Explain this ${language} code in simple terms:
 
     Code:
@@ -202,6 +210,7 @@ export async function explainCode(code: string, language: string) {
 
     Please provide a clear and concise explanation.`;
 
+    const client = getGeminiClient();
     const result = await client.generateContent(prompt);
     const text = result.response.text();
     
@@ -210,9 +219,6 @@ export async function explainCode(code: string, language: string) {
     };
   } catch (error) {
     console.error('Error explaining code:', error);
-    if (isApiKeyError(error)) {
-      return getFallbackResponse('explain', code, language);
-    }
-    throw error;
+    return getErrorResponse('explain', error, code, language);
   }
 } 

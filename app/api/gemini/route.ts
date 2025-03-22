@@ -1,51 +1,85 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+// Initialize the Google Generative AI client
+const apiKey = process.env.GEMINI_API_KEY || '';
+const genAI = new GoogleGenerativeAI(apiKey);
+
+// Configure gemini model - using only the working model
+function getGeminiClient() {
+  return genAI.getGenerativeModel({
+    model: "gemini-1.5-pro",
+    generationConfig: {
+      temperature: 0.7,
+      topP: 0.95,
+      topK: 40,
+      maxOutputTokens: 8192,
+    }
+  });
+}
+
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const { code, language } = body;
-
-    if (!code || !language) {
+    // Check if API key is configured
+    if (!apiKey) {
+      console.error('Gemini API key not configured');
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Gemini API key not configured. Please check your environment variables.' },
+        { status: 500 }
+      );
+    }
+    
+    // Debug API key (redacting most of it for security)
+    const firstFive = apiKey.substring(0, 5);
+    const lastThree = apiKey.substring(apiKey.length - 3);
+    console.log(`[DEBUG] Using Gemini API Key: ${firstFive}...${lastThree} (${apiKey.length} chars)`);
+    
+    // Parse request
+    const body = await req.json();
+    const { prompt } = body;
+    
+    if (!prompt) {
+      return NextResponse.json(
+        { error: 'Prompt is required' },
         { status: 400 }
       );
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json(
-        { error: 'API key not configured' },
-        { status: 500 }
-      );
-    }
-
+    // Generate content using Gemini
     try {
-      // Initialize the Gemini 2.0 Flash client
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-      const client = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      
-      const prompt = `Analyze this ${language} code and provide insights:
-      
-      ${code}
-      
-      Please provide detailed analysis.`;
-
-      const result = await client.generateContent(prompt);
+      const model = getGeminiClient();
+      console.log(`[DEBUG] Generating content with model: gemini-1.5-pro`);
+      const result = await model.generateContent(prompt);
       const response = result.response.text();
       
       return NextResponse.json({ response });
     } catch (error: any) {
-      console.error(`Error with Gemini 2.0 API: ${error.message}`);
+      console.error('Gemini generation error:', error);
+      
+      // Handle specific error cases
+      if (error.message && error.message.includes('API key')) {
+        return NextResponse.json(
+          { error: 'Invalid API key. Please check your GEMINI_API_KEY environment variable.' },
+          { status: 401 }
+        );
+      }
+      
+      if (error.message && error.message.includes('429')) {
+        return NextResponse.json(
+          { error: 'Too many requests. Please try again later.' },
+          { status: 429 }
+        );
+      }
+      
       return NextResponse.json(
-        { error: error.message, response: "Failed to generate response from Gemini 2.0 model." },
+        { error: `Error generating content: ${error.message}` },
         { status: 500 }
       );
     }
   } catch (error: any) {
-    console.error('Error in gemini endpoint:', error);
+    console.error('Unexpected error in Gemini route:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Unexpected error: ${error.message}` },
       { status: 500 }
     );
   }
