@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { CodeEditor } from "@/components/CodeEditor";
+import CodeEditor from "@/components/CodeEditor";
 import { explainAlgorithm } from "@/lib/api";
-import { ResultsDisplay } from "@/components/ResultsDisplay";
+import ResultsDisplay from "@/components/ResultsDisplay";
 import { toast } from "sonner";
 
 export default function ExplainPage() {

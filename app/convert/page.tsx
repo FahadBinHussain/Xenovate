@@ -7,8 +7,8 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { convertCode } from "@/lib/api";
 import { toast } from "sonner";
-import { CodeEditor } from "@/components/CodeEditor";
-import { ResultsDisplay } from "@/components/ResultsDisplay";
+import CodeEditor from "@/components/CodeEditor";
+import ResultsDisplay from "@/components/ResultsDisplay";
 
 export default function ConvertPage() {
   const router = useRouter();
