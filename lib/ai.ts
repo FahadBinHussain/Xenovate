@@ -13,11 +13,29 @@ if (apiKey) {
 // Initialize the Google AI client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
+// Define available models in order of preference
+const AVAILABLE_MODELS = [
+  'gemini-1.5-pro',
+  'gemini-1.5-flash', 
+  'gemini-pro',
+  'gemini-pro-latest'
+];
+
+// Keep track of models that have encountered quota errors
+const quotaExhaustedModels = new Set();
+
 // Helper function to check if the error is related to API key
 function isApiKeyError(error: any): boolean {
   return error?.message?.includes('API key') || 
          error?.message?.includes('API_KEY_INVALID') ||
          error?.message?.includes('API key expired');
+}
+
+// Helper function to check if the error is related to quota limits
+function isQuotaError(error: any): boolean {
+  return error?.message?.includes('quota') || 
+         error?.message?.includes('Resource has been exhausted') || 
+         error?.message?.includes('429 Too Many Requests');
 }
 
 // Helper function to get error response
@@ -49,17 +67,56 @@ function getErrorResponse(type: 'analyze' | 'optimize' | 'convert' | 'explain', 
   }
 }
 
-// Configure the Gemini model - only use the model that's confirmed to work
-function getGeminiClient() {
-  return genAI.getGenerativeModel({ 
-    model: 'gemini-1.5-pro',
-    generationConfig: {
-      temperature: 0.7,
-      topP: 0.95,
-      topK: 40,
-      maxOutputTokens: 8192,
+// Configure the Gemini model with fallback capability
+async function getGeminiResponse(prompt: string) {
+  // Try each model in order of preference until one works
+  let lastError = null;
+  
+  // Filter out models that have already encountered quota errors in this session
+  const availableModels = AVAILABLE_MODELS.filter(model => !quotaExhaustedModels.has(model));
+  
+  if (availableModels.length === 0) {
+    // If all models have quota issues, clear the set and try again with all models
+    // This handles the case where quotas reset after some time
+    console.log('[DEBUG] All models exhausted, resetting model list');
+    quotaExhaustedModels.clear();
+  }
+  
+  for (const model of AVAILABLE_MODELS) {
+    try {
+      console.log(`[DEBUG] Trying model: ${model}`);
+      const client = genAI.getGenerativeModel({ 
+        model: model,
+        generationConfig: {
+          temperature: 0.7,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 8192,
+        }
+      });
+      
+      const result = await client.generateContent(prompt);
+      console.log(`[DEBUG] Success with model: ${model}`);
+      return result.response.text();
+    } catch (error: any) {
+      lastError = error;
+      console.error(`[DEBUG] Error with model ${model}:`, error.message);
+      
+      if (isQuotaError(error)) {
+        // Mark this model as having quota issues
+        console.log(`[DEBUG] Quota exhausted for model: ${model}`);
+        quotaExhaustedModels.add(model);
+        // Continue to try the next model
+        continue;
+      } else {
+        // For other types of errors (not quota related), throw immediately
+        throw error;
+      }
     }
-  });
+  }
+  
+  // If we've tried all models and none worked
+  throw lastError || new Error('All AI models failed to respond');
 }
 
 export async function analyzeCode(code: string, language: string) {
@@ -78,9 +135,7 @@ export async function analyzeCode(code: string, language: string) {
 
     Please format your response as JSON with keys: time_complexity, space_complexity, explanation`;
 
-    const client = getGeminiClient();
-    const result = await client.generateContent(prompt);
-    const text = result.response.text();
+    const text = await getGeminiResponse(prompt);
     
     // Clean up the response text
     let cleanText = text.trim();
@@ -131,9 +186,7 @@ export async function optimizeCode(code: string, language: string) {
 
     Please format your response as JSON with keys: optimized_code, improvements`;
 
-    const client = getGeminiClient();
-    const result = await client.generateContent(prompt);
-    const text = result.response.text();
+    const text = await getGeminiResponse(prompt);
     
     // Clean up the response text
     let cleanText = text.trim();
@@ -176,9 +229,7 @@ export async function convertCode(code: string, sourceLanguage: string, targetLa
 
     Please provide only the converted code without any explanations or markdown formatting.`;
 
-    const client = getGeminiClient();
-    const result = await client.generateContent(prompt);
-    const text = result.response.text();
+    const text = await getGeminiResponse(prompt);
     
     // Clean up the response text
     let cleanText = text.trim();
@@ -210,9 +261,7 @@ export async function explainCode(code: string, language: string) {
 
     Please provide a clear and concise explanation.`;
 
-    const client = getGeminiClient();
-    const result = await client.generateContent(prompt);
-    const text = result.response.text();
+    const text = await getGeminiResponse(prompt);
     
     return {
       explanation: text.trim()
