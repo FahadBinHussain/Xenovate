@@ -15,6 +15,49 @@ Xenovate is a code analysis platform that helps developers analyze, optimize, co
 - Supabase for user authentication and database
 - Google Gemini AI for code analysis
 
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+## Deployment on Render
+
+This project is configured for deployment on Render. The `render.yaml` file includes all necessary configuration.
+
+### Environment Variables
+
+Make sure to set the following environment variables in your Render dashboard:
+
+- `GEMINI_API_KEY` - Your Google Gemini API key
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+
+### Troubleshooting
+
+If you encounter build issues:
+
+1. Make sure all dependencies are installed properly:
+   ```bash
+   npm install --production=false
+   ```
+
+2. Check that the UI components are properly set up:
+   ```bash
+   node setup-ui.js
+   ```
+
+3. Verify that environment variables are correctly set in your Render dashboard.
+
+## Development
+
+- Run `npm run dev` to start the development server
+- Visit `http://localhost:3000` to view the application
+
 ## Getting Started
 
 ### Prerequisites
@@ -49,21 +92,6 @@ npm run dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Deployment
-
-This project can be deployed on Render with a single command:
-
-1. Connect your GitHub repository to Render
-2. Use the provided `render.yaml` for automatic deployment
-3. Set up the required environment variables in Render dashboard
-
-## Environment Variables
-
-- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-- `GEMINI_API_KEY`: Your Google Gemini API key
-- `NEXT_PUBLIC_API_URL`: API URL (set to '/api' for development and production)
 
 ## License
 

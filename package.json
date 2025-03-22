@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p ${PORT:-3000}",
-    "build": "next build",
+    "postinstall": "node setup-ui.js",
+    "build": "npm install --production=false && node setup-ui.js && next build",
     "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
     "render-start": "next start -p ${PORT:-3000}"
