@@ -71,6 +71,7 @@ function getErrorResponse(type: 'analyze' | 'optimize' | 'convert' | 'explain', 
 async function getGeminiResponse(prompt: string) {
   // Try each model in order of preference until one works
   let lastError = null;
+  let fallbackAttempted = false;
   
   // Filter out models that have already encountered quota errors in this session
   const availableModels = AVAILABLE_MODELS.filter(model => !quotaExhaustedModels.has(model));
@@ -85,6 +86,12 @@ async function getGeminiResponse(prompt: string) {
   for (const model of AVAILABLE_MODELS) {
     try {
       console.log(`[DEBUG] Trying model: ${model}`);
+      
+      // Log fallback message if we're not using the first model
+      if (fallbackAttempted) {
+        console.log(`[DEBUG] Falling back to model: ${model} due to quota issues with previous models`);
+      }
+      
       const client = genAI.getGenerativeModel({ 
         model: model,
         generationConfig: {
@@ -95,7 +102,17 @@ async function getGeminiResponse(prompt: string) {
         }
       });
       
-      const result = await client.generateContent(prompt);
+      // Add a timeout to prevent hanging requests
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout after 30 seconds')), 30000);
+      });
+      
+      // Race between the actual request and the timeout
+      const result = await Promise.race([
+        client.generateContent(prompt),
+        timeoutPromise
+      ]) as any;
+      
       console.log(`[DEBUG] Success with model: ${model}`);
       return result.response.text();
     } catch (error: any) {
@@ -106,6 +123,8 @@ async function getGeminiResponse(prompt: string) {
         // Mark this model as having quota issues
         console.log(`[DEBUG] Quota exhausted for model: ${model}`);
         quotaExhaustedModels.add(model);
+        // Set fallback flag to true so we know we're falling back
+        fallbackAttempted = true;
         // Continue to try the next model
         continue;
       } else {

@@ -1,38 +1,53 @@
 "use client";
 
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Copy, Download } from "lucide-react";
 
 interface AnalysisResult {
-  timeComplexity?: string;
-  spaceComplexity?: string;
-  explanation?: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+  explanation: string;
 }
 
 interface OptimizationResult {
-  optimizedCode?: string;
-  improvements?: string[];
+  optimizedCode: string;
+  improvements: string[];
 }
 
 interface ConversionResult {
-  convertedCode?: string;
-  targetLanguage?: string;
+  convertedCode: string;
+  targetLanguage: string;
+}
+
+interface ExplanationResult {
+  explanation: string;
 }
 
 interface ResultsDisplayProps {
-  type: "analysis" | "explanation" | "optimization" | "conversion";
+  type: "analysis" | "optimization" | "conversion" | "explanation";
   loading: boolean;
-  data: AnalysisResult | OptimizationResult | ConversionResult | null;
+  data: AnalysisResult | OptimizationResult | ConversionResult | ExplanationResult | null;
   onCopyCode?: () => void;
 }
 
-export function ResultsDisplay({
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   type,
   loading,
   data,
   onCopyCode
-}: ResultsDisplayProps) {
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    if (onCopyCode) {
+      onCopyCode();
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[400px]">
@@ -120,12 +135,12 @@ export function ResultsDisplay({
           </div>
           {onCopyCode && (
             <Button
-              onClick={onCopyCode}
+              onClick={copyToClipboard}
               variant="outline"
               size="sm"
               className="mt-4"
             >
-              Copy to Clipboard
+              {copied ? "Copied!" : "Copy to Clipboard"}
             </Button>
           )}
         </div>
@@ -134,7 +149,7 @@ export function ResultsDisplay({
   }
 
   // Render conversion results
-  if (type === "conversion" && "convertedCode" in data) {
+  if (type === "conversion" && "convertedCode" in data && "targetLanguage" in data) {
     return (
       <div>
         <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md h-[400px] overflow-auto">
@@ -142,12 +157,12 @@ export function ResultsDisplay({
         </div>
         {onCopyCode && (
           <Button
-            onClick={onCopyCode}
+            onClick={copyToClipboard}
             variant="outline"
             size="sm"
             className="mt-4"
           >
-            Copy to Clipboard
+            {copied ? "Copied!" : "Copy to Clipboard"}
           </Button>
         )}
       </div>
@@ -155,4 +170,6 @@ export function ResultsDisplay({
   }
 
   return <div>No results to display</div>;
-} 
+}
+
+export default ResultsDisplay 
