@@ -28,11 +28,13 @@ const nextConfig = {
       {
         source: '/api/:path*',
         destination: process.env.NODE_ENV === 'production' 
-          ? 'https://xenovate-api.onrender.com/:path*' 
-          : 'http://localhost:8000/:path*'
+          ? 'https://xenovate-api.onrender.com/api/:path*' 
+          : 'http://localhost:8000/api/:path*'
       }
     ];
-  }
+  },
+  // Add output config to optimize for production
+  output: 'standalone'
 }
 
 module.exports = nextConfig 

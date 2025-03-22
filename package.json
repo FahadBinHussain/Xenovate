@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "NODE_OPTIONS='--max_old_space_size=450' next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "render-start": "next start -p $PORT"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
