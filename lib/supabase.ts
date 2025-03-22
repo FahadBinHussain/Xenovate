@@ -4,8 +4,38 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+// Log important debug info
+console.log('Supabase URL:', supabaseUrl ? 'Set' : 'Not set');
+console.log('Supabase Anon Key:', supabaseAnonKey ? 'Set' : 'Not set');
+
 // Create a single supabase client for interacting with the database
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    storageKey: 'supabase-auth',
+    storage: {
+      getItem: (key) => {
+        if (typeof window === 'undefined') {
+          return null;
+        }
+        console.log('Auth storage getItem:', key);
+        return JSON.parse(window.localStorage.getItem(key) || 'null');
+      },
+      setItem: (key, value) => {
+        if (typeof window !== 'undefined') {
+          console.log('Auth storage setItem:', key);
+          window.localStorage.setItem(key, JSON.stringify(value));
+        }
+      },
+      removeItem: (key) => {
+        if (typeof window !== 'undefined') {
+          console.log('Auth storage removeItem:', key);
+          window.localStorage.removeItem(key);
+        }
+      },
+    },
+  },
+});
 
 /**
  * Sign in a user with email and password
@@ -74,6 +104,35 @@ export async function signOut() {
  */
 export async function getUser() {
   const { data } = await supabase.auth.getUser();
+  return data?.user || null;
+}
+
+/**
+ * Get the user from cookies - for use in API routes
+ */
+export async function getUserFromCookies(cookies: string) {
+  if (!cookies) return null;
+  
+  // Create a new supabase client with cookies
+  const cookieClient = createClient(
+    supabaseUrl, 
+    supabaseAnonKey, 
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+      global: {
+        headers: {
+          Cookie: cookies,
+        },
+      },
+    }
+  );
+  
+  // Try to get the user
+  const { data } = await cookieClient.auth.getUser();
   return data?.user || null;
 }
 

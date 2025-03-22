@@ -11,6 +11,8 @@ import { analyzeAlgorithm, optimizeAlgorithm, convertCode, explainAlgorithm } fr
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Code, ArrowRight, Zap, FileCode, BrainCircuit } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { saveHistoryItem } from "@/lib/history";
 
 interface AnalysisResults {
   timeComplexity: string;
@@ -63,6 +65,33 @@ export default function HomePage() {
   // Active tab
   const [activeTab, setActiveTab] = useState("analyze");
 
+  const { user, isLoggedIn } = useAuth();
+  
+  // Function to record history for a completed operation
+  const recordHistory = async (
+    operationType: 'analyze' | 'optimize' | 'convert' | 'explain',
+    resultSummary: string
+  ) => {
+    // Only record history for logged-in users
+    if (!isLoggedIn || !user) {
+      return;
+    }
+    
+    try {
+      await saveHistoryItem({
+        user_id: user.id,
+        operation_type: operationType,
+        code_snippet: code,
+        language: language,
+        target_language: operationType === 'convert' ? targetLanguage : undefined,
+        result_summary: resultSummary
+      });
+    } catch (error) {
+      console.error('Error recording history:', error);
+      // Don't show an error toast - this is a background operation
+    }
+  };
+
   // Process code based on active tab
   const processCode = async () => {
     if (!code.trim()) {
@@ -90,6 +119,11 @@ export default function HomePage() {
           spaceComplexity: result.space_complexity,
           explanation: result.explanation,
         });
+        
+        // Record in history
+        if (isLoggedIn) {
+          recordHistory('analyze', `Time: ${result.time_complexity}, Space: ${result.space_complexity}`);
+        }
       } 
       else if (activeTab === "optimize") {
         const result = await optimizeAlgorithm({ code, language });
@@ -97,6 +131,11 @@ export default function HomePage() {
           optimizedCode: result.optimized_code,
           improvements: result.improvements,
         });
+        
+        // Record in history
+        if (isLoggedIn) {
+          recordHistory('optimize', `Improvements: ${result.improvements.join(', ')}`);
+        }
       }
       else if (activeTab === "convert") {
         const result = await convertCode({ code, language }, targetLanguage);
@@ -104,12 +143,22 @@ export default function HomePage() {
           convertedCode: result.converted_code,
           targetLanguage: result.target_language,
         });
+        
+        // Record in history
+        if (isLoggedIn) {
+          recordHistory('convert', `Converted to ${result.target_language}`);
+        }
       }
       else if (activeTab === "explain") {
         const result = await explainAlgorithm({ code, language });
         setExplanationResults({
           explanation: result.explanation,
         });
+        
+        // Record in history
+        if (isLoggedIn) {
+          recordHistory('explain', 'Code explained');
+        }
       }
       
       toast.success(`${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} operation completed!`);
