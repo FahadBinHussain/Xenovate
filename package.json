@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "NODE_OPTIONS='--max_old_space_size=450' next build",
-    "start": "next start",
+    "dev": "next dev -p ${PORT:-3000}",
+    "build": "next build",
+    "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
-    "render-start": "next start -p $PORT"
+    "render-start": "next start -p ${PORT:-3000}"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
