@@ -20,7 +20,11 @@ const Header = () => {
     <header className="border-b">
       <div className="container mx-auto flex justify-between items-center py-4">
         <div className="flex items-center">
-          <Link href="/" className="text-xl font-bold mr-8">Xenovate</Link>
+          <Link href="/" className="text-xl font-bold mr-8">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Xenovate
+            </span>
+          </Link>
           <nav className="hidden md:flex gap-6">
             <Link href="/" className="text-sm font-medium">Home</Link>
             <Link href="/features" className="text-sm font-medium">Features</Link>

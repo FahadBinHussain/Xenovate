@@ -177,24 +177,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Hero Header with gradient */}
-      <header className="border-b bg-white dark:bg-gray-800 px-6 py-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Xenovate
-            </span>
-          </h1>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">AI-Powered Algorithm Assistant</div>
-            <ModelStatus />
-          </div>
-        </div>
-      </header>
-      
       {/* Welcome Section */}
       <section className="bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 py-8 px-4 mb-6">
         <div className="container mx-auto text-center">
+          <div className="flex justify-end mb-4">
+            <ModelStatus />
+          </div>
           <h2 className="text-3xl font-bold mb-4">
             Transform Your Code with 
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ml-2">

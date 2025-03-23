@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AboutPage() {
   return (
@@ -30,7 +31,7 @@ export default function AboutPage() {
               <div>
                 <h2 className="text-3xl font-bold tracking-tighter mb-4">Our Story</h2>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  Xenovate was founded in 2023 with a simple idea: to make algorithm optimization more accessible 
+                  Xenovate was founded in 2025 with a simple idea: to make algorithm optimization more accessible 
                   to developers of all skill levels. Our team of passionate engineers and AI experts came together 
                   to build a platform that analyzes, optimizes, and explains algorithms in an intuitive way.
                 </p>
@@ -42,7 +43,7 @@ export default function AboutPage() {
               <div className="rounded-lg bg-gray-200 dark:bg-gray-800 aspect-video flex items-center justify-center">
                 <div className="text-center p-8">
                   <span className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    2023
+                    2025
                   </span>
                   <p className="mt-2 text-gray-600 dark:text-gray-300">Year Founded</p>
                 </div>
@@ -57,41 +58,40 @@ export default function AboutPage() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
               <h2 className="text-3xl font-bold tracking-tighter">Our Team</h2>
               <p className="mx-auto max-w-[700px] text-gray-500 dark:text-gray-400">
-                Meet the passionate individuals behind Xenovate who are dedicated to making algorithm 
+                Meet the passionate individual behind Xenovate who is dedicated to making algorithm 
                 optimization accessible to everyone.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Team Member 1 */}
+            <div className="grid grid-cols-1 gap-8 max-w-md mx-auto">
+              {/* Founder & Creator */}
               <div className="flex flex-col items-center space-y-4">
-                <div className="h-40 w-40 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                  <span className="text-4xl">👨‍💻</span>
+                <div className="h-40 w-40 rounded-full overflow-hidden border-2 border-white shadow-lg relative">
+                  {/* If you don't have a local image, you can use an external URL like this:
+                  <Image 
+                    src="https://example.com/your-image-url.jpg" 
+                    alt="Fahad Bin Hussain"
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                  />
+                  */}
+                  <Image 
+                    src="/images/fahad-profile.png" 
+                    alt="Fahad Bin Hussain"
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                    priority
+                  />
                 </div>
-                <div className="space-y-2 text-center">
-                  <h3 className="text-xl font-bold">Alex Johnson</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Founder & CEO</p>
-                </div>
-              </div>
-              
-              {/* Team Member 2 */}
-              <div className="flex flex-col items-center space-y-4">
-                <div className="h-40 w-40 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                  <span className="text-4xl">👩‍💻</span>
-                </div>
-                <div className="space-y-2 text-center">
-                  <h3 className="text-xl font-bold">Sarah Lee</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">CTO & Lead Developer</p>
-                </div>
-              </div>
-              
-              {/* Team Member 3 */}
-              <div className="flex flex-col items-center space-y-4">
-                <div className="h-40 w-40 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                  <span className="text-4xl">🧙‍♂️</span>
-                </div>
-                <div className="space-y-2 text-center">
-                  <h3 className="text-xl font-bold">Michael Chen</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">AI Research Lead</p>
+                <div className="space-y-3 text-center">
+                  <h3 className="text-2xl font-bold">Fahad Bin Hussain</h3>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">Founder & Lead Developer</p>
+                  <div className="flex flex-col gap-1 pt-1">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">AI Implementation Specialist</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Algorithm Optimization Expert</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Full Stack Engineer</span>
+                  </div>
                 </div>
               </div>
             </div>
