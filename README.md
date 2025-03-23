@@ -1,98 +1,82 @@
-# Xenovate
+# Xenovate - AI-Powered Code Analysis Platform
 
-Xenovate is a code analysis platform that helps developers analyze, optimize, convert, and explain code using AI.
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js)
+![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=flat&logo=supabase)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-blue?style=flat&logo=google)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat&logo=typescript)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
 
-## Features
+Xenovate is a professional AI-powered code analysis platform that helps developers understand, improve, and transform their algorithms. With advanced analysis capabilities, Xenovate accelerates development workflows and improves code quality.
 
-- Code Analysis: Get time and space complexity analysis
-- Code Optimization: Improve your algorithm's performance
-- Code Conversion: Convert code between programming languages
-- Code Explanation: Get simple explanations of complex code
+## 🚀 Features
 
-## Tech Stack
+- **Algorithm Analysis** - Get detailed time and space complexity insights
+- **Code Optimization** - Receive AI-suggested performance improvements
+- **Language Conversion** - Transform code between multiple programming languages
+- **Code Explanation** - Understand complex algorithms with plain language explanations
 
-- Next.js for frontend and API routes
-- Supabase for user authentication and database
-- Google Gemini AI for code analysis
+## 🛠️ Tech Stack
 
-## Quick Start
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Authentication & Database**: Supabase
+- **AI Integration**: Google Gemini AI
+- **UI Components**: shadcn/ui
+
+## 🏃‍♂️ Quick Start
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/xenovate.git
+
+# Navigate to the project directory
+cd xenovate
+
 # Install dependencies
+npm install
+
+# Create .env file (see Configuration section)
+
+# Run development server
+npm run dev
+
+# Open http://localhost:3000 in your browser
+```
+
+## ⚙️ Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+## 🚢 Deployment
+
+Xenovate is configured for deployment on Render using the included `render.yaml` file.
+
+### Environment Variables for Deployment
+
+Set these variables in your Render dashboard:
+- `GEMINI_API_KEY`: Your Google Gemini API key
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+
+## 🧑‍💻 Development
+
+```bash
+# Install dependencies including dev dependencies
 npm install
 
 # Run development server
 npm run dev
 ```
 
-## Deployment on Render
+## 👨‍👩‍👧‍👦 Team
 
-This project is configured for deployment on Render. The `render.yaml` file includes all necessary configuration.
+Developed by Fahad Bin Hussain - Full Stack Engineer & AI Implementation Specialist
 
-### Environment Variables
+## 📄 License
 
-Make sure to set the following environment variables in your Render dashboard:
-
-- `GEMINI_API_KEY` - Your Google Gemini API key
-- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
-
-### Troubleshooting
-
-If you encounter build issues:
-
-1. Make sure all dependencies are installed properly:
-   ```bash
-   npm install --production=false
-   ```
-
-2. Check that the UI components are properly set up:
-   ```bash
-   node setup-ui.js
-   ```
-
-3. Verify that environment variables are correctly set in your Render dashboard.
-
-## Development
-
-- Run `npm run dev` to start the development server
-- Visit `http://localhost:3000` to view the application
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18.0.0 or later)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/xenovate.git
-cd xenovate
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create a `.env` file in the root directory with the following:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-GEMINI_API_KEY=your_gemini_api_key
-NEXT_PUBLIC_API_URL=/api
-```
-
-4. Start the development server:
-```bash
-npm run dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## License
-
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

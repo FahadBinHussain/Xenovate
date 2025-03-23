@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from 'next-themes';
 import Header from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface AppProviderProps {
@@ -14,10 +15,10 @@ export default function AppProvider({ children }: AppProviderProps) {
   const { loading } = useAuth();
   const pathname = usePathname();
   
-  // Log navigation events to help debug auth issues
-  useEffect(() => {
-    console.log(`Navigation to: ${pathname}, loading: ${loading}`);
-  }, [pathname, loading]);
+  // Navigation tracking can be re-enabled for debugging if needed
+  // useEffect(() => {
+  //   console.log(`Navigation to: ${pathname}, loading: ${loading}`);
+  // }, [pathname, loading]);
 
   return (
     <ThemeProvider
@@ -30,6 +31,7 @@ export default function AppProvider({ children }: AppProviderProps) {
       <main>
         {children}
       </main>
+      <Footer />
     </ThemeProvider>
   );
 } 

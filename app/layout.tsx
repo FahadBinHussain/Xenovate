@@ -11,9 +11,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Algorithm Optimizer - Analyze, Optimize, and Understand Algorithms",
-  description: "An AI-powered tool to analyze algorithm complexity, suggest optimizations, convert between languages, and explain algorithms in simple terms.",
-  keywords: "algorithm, optimization, time complexity, space complexity, code conversion, AI, machine learning",
+  title: "Xenovate - AI-Powered Algorithm Analysis Tool",
+  description: "Analyze algorithm complexity, optimize code, convert between programming languages, and get plain-English explanations with our AI-powered platform.",
+  keywords: "algorithm analysis, code optimization, time complexity, space complexity, code conversion, AI coding assistant, algorithm explanation",
+  authors: [{ name: "Fahad Bin Hussain" }],
+  creator: "Fahad Bin Hussain",
+  publisher: "Xenovate",
+  robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://xenovate.app/",
+    title: "Xenovate - AI-Powered Algorithm Analysis Tool",
+    description: "Analyze, optimize, convert, and understand your code with AI",
+    siteName: "Xenovate",
+  },
 };
 
 export default function RootLayout({
