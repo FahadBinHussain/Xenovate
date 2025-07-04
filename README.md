@@ -1,5 +1,9 @@
 # Xenovate - AI-Powered Code Analysis Platform
 
+<img src="https://wakapi-qt1b.onrender.com/api/badge/fahad/interval:any/project:Xenovate" 
+     alt="Wakapi Time Tracking" 
+     title="Spent more than that amount of time spent on this project">
+
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js)
 ![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=flat&logo=supabase)
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-blue?style=flat&logo=google)
