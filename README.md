@@ -84,3 +84,9 @@ Developed by Fahad Bin Hussain - Full Stack Engineer & AI Implementation Special
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributors
+
+<a href="https://github.com/FahadBinHussain/xenovate/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=FahadBinHussain/xenovate" alt="Contributors" />
+</a>
