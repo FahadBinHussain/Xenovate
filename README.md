@@ -10,6 +10,10 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
 
+## Maintenance Status
+
+This project is not actively maintained now. It remains public as a reference/portfolio project, but new features, fixes, and support are not currently planned.
+
 Xenovate is a professional AI-powered code analysis platform that helps developers understand, improve, and transform their algorithms. With advanced analysis capabilities, Xenovate accelerates development workflows and improves code quality.
 
 ## 🚀 Features
